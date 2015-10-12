@@ -5,46 +5,35 @@
         todos = document.querySelectorAll('.todo-list li'),
         mainSection = document.querySelectorAll('.main')[0],
         footer = document.querySelectorAll('.footer')[0],
-        input = document.querySelectorAll('.new-todo')[0];
+        input = document.querySelectorAll('.new-todo')[0],
+        ENTER_KEY_CODE = 13;
 
     function isEmptyString(string) {
     	var sym = /^\s*$/.test(string);
-    	if (sym){
-    		return false;
-    	} else {
-    		return true;
-    	}
+    	return !sym;
     }
     
-
-    // console.log(!!parseInt('  '));
-
     if( todos.length === 0 ) {
         footer.style.display = 'none';
         mainSection.style.display = 'none';
     }
 
-    input.onkeypress = function(e) {
-        var event = e || window.event;
-        var charCode = event.which || event.keyCode;
+    input.onkeypress = function(event) {
+        var charCode = event.keyCode;
+        
 
-        if ( charCode == '13' ) {
-            if (isEmptyString(this.value)) {
-            	var todoBody = this.value.trim(),
-	            	template = '<li><div class="view"><input class="toggle" type="checkbox"><label>' + todoBody + '<button class="destroy"></button></label></div></li>',
-	                todo = todoListElement.appendChild(document.createElement('li'));
+        if ( charCode === ENTER_KEY_CODE && isEmptyString(this.value) ) {
 
-	            footer.style.display = 'block';
-	            mainSection.style.display = 'block';
+        	var todoBody = this.value.trim(),
+        	template = '<li><div class="view"><input class="toggle" type="checkbox"><label>' + todoBody + '<button class="destroy"></button></label></div></li>',
+            todo = todoListElement.appendChild(document.createElement('li'));        	
 
-	            
-	            todo.innerHTML = template;
-	            this.value = '';
-
-	            // Enter pressed
-	            return false;
-            }
+            footer.style.display = 'block';
+            mainSection.style.display = 'block';
+            
+            todo.innerHTML = template;
+            this.value = '';
         }
-    }
+    }	
 
 })(window);
