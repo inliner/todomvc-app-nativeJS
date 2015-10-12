@@ -6,9 +6,18 @@
         mainSection = document.querySelectorAll('.main')[0],
         footer = document.querySelectorAll('.footer')[0],
         input = document.querySelectorAll('.new-todo')[0];
+
+    function isEmptyString(string) {
+    	var sym = /^\s*$/.test(string);
+    	if (sym){
+    		return false;
+    	} else {
+    		return true;
+    	}
+    }
     
 
-    // console.log(input);
+    // console.log(!!parseInt('  '));
 
     if( todos.length === 0 ) {
         footer.style.display = 'none';
@@ -20,20 +29,21 @@
         var charCode = event.which || event.keyCode;
 
         if ( charCode == '13' ) {
-            
-            var template = '<li><div class="view"><input class="toggle" type="checkbox"><label>' + this.value + '<button class="destroy"></button></label></div></li>',
-                todo = todoListElement.appendChild(document.createElement('li'));
+            if (isEmptyString(this.value)) {
+            	var todoBody = this.value.trim(),
+	            	template = '<li><div class="view"><input class="toggle" type="checkbox"><label>' + todoBody + '<button class="destroy"></button></label></div></li>',
+	                todo = todoListElement.appendChild(document.createElement('li'));
 
-            footer.style.display = 'block';
-            mainSection.style.display = 'block';
+	            footer.style.display = 'block';
+	            mainSection.style.display = 'block';
 
-            
-            todo.innerHTML = template;
-            this.value = '';
-            console.log(this.value);
+	            
+	            todo.innerHTML = template;
+	            this.value = '';
 
-            // Enter pressed
-            return false;
+	            // Enter pressed
+	            return false;
+            }
         }
     }
 
