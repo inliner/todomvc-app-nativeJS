@@ -1,11 +1,6 @@
 (function (window) {
     'use strict';
 
-    function Todo(name) {
-        this.body = name;
-        this.completed = false;
-    }
-
     var todoListElement = document.querySelectorAll('.todo-list')[0],
         todos = document.querySelectorAll('.todo-list li'),
         mainSection = document.querySelectorAll('.main')[0],
@@ -26,12 +21,14 @@
 
         if ( charCode == '13' ) {
             
+            var template = '<li><div class="view"><input class="toggle" type="checkbox"><label>' + this.value + '<button class="destroy"></button></label></div></li>',
+                todo = todoListElement.appendChild(document.createElement('li'));
 
             footer.style.display = 'block';
             mainSection.style.display = 'block';
 
-            var todo = todoListElement.appendChild(document.createElement('li'));
-            todo.innerHTML = this.value;
+            
+            todo.innerHTML = template;
             this.value = '';
             console.log(this.value);
 
