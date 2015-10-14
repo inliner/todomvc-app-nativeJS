@@ -1,7 +1,7 @@
 var gulp        = require('gulp');
 var browserSync = require('browser-sync').create();
 
-gulp.task('serve', function () {
+gulp.task('default', function () {
 
     // Serve files from the root of this project
     browserSync.init({
