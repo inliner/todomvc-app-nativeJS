@@ -3,33 +3,73 @@
     'use strict';
 
     var todoList = JSON.parse(localStorage.getItem('storeTodo')) || [],
-        todoListElement = document.querySelectorAll('.todo-list')[0],
+        todoListElement = document.querySelector('.todo-list'),
         todos = document.querySelectorAll('.todo-list li'),
-        mainSection = document.querySelectorAll('.main')[0],
-        footer = document.querySelectorAll('.footer')[0],
-        input = document.querySelectorAll('.new-todo')[0],
+        mainSection = document.querySelector('.main'),
+        footer = document.querySelector('.footer'),
+        input = document.querySelector('.new-todo'),
         toggle = todoListElement.querySelectorAll('.toggle'),
         todoCount = footer.querySelector('.todo-count strong'),
         deleteElement = document.querySelectorAll('destroy'),
         ENTER_KEY_CODE = 13;
 
-    var lineThrough = function(event) {
+    function createTodoRecord(id, txt, completed) {
+        this.id = id;
+        this.txt = txt;
+        this.completed = completed;
+    };
+
+    function updateTodoRecord(record, newTxt, newCompleted) {
+        record.txt = newTxt;
+        record.completed = !!newCompleted;
+    };
+
+    function arrayObjectIndexOf(myArray, property, searchTerm) {
+        for(var i = 0, len = myArray.length; i < len; i++) {
+            if (myArray[i][property] === searchTerm) return i;
+        }
+        return -1;
+    }
+
+    var markCompleted = function(event) {
         var todoCountValue = parseInt(todoCount.innerHTML),
-            todoContainer = $parent(event.target, 'li');
+            todoContainer = $parent(event.target, 'li'),
+            todoTxt = todoContainer.textContent,
+            recordIndex = arrayObjectIndexOf(todoList, 'txt', todoTxt);
+
         
+
+        
+
         todoContainer.classList.toggle('completed');
 
-        if ( hasClass(todoContainer, 'completed') ) {
-            todoCount.innerHTML = todoCountValue - 1;
-        } else {
-            todoCount.innerHTML = todoCountValue + 1;
+        
+        if ( todoContainer.classList.contains('completed') ) {
+
+            updateTodoRecord(todoList[recordIndex], todoTxt, true);
+
+        }
+
+        var countCompeleted = function() {
+            for(var i = 0, j = 0, len = todoList.length; i < len; i++) {
+                if (todoList[i]['completed'] === true) {j++}
+                return j;
+            }
         };
 
-        var countCompeletd = todoList.filter(function (item) {
-        	return item.completed
-        }).length;
+        console.log(countCompeleted());
+        console.log(todoList);
 
-        todoCount.innerHTML = countCompeletd;
+
+
+        // var countCompeleted = todoList.filter(function (item) {
+        // 	return item.completed
+        // }).length;
+
+        todoCount.innerHTML = countCompeleted();
+
+
+        // console.log(todoList);
     };
 
     window.$parent = function (element, tagName) { //Stolen from tastejs
@@ -51,17 +91,12 @@
         }
     };
 
-    function isEmptyString(string) {
-    	var sym = /^\s*$/.test(string);
-    	return sym;
-    };
-
-    function showElements() {
+    function showMainAndFooter() {
         footer.classList.remove('hidden');
         mainSection.classList.remove('hidden');
     };
 
-    function hideElements() {
+    function hideMainAndFooter() {
         footer.classList.add('hidden');
         mainSection.classList.add('hidden');
     };
@@ -69,7 +104,7 @@
     function buildTodos() {
         todoList.forEach ( function(elem, index, array) {
             // console.log(elem, index, array);
-            var template = '<div class="view"><input class="toggle" type="checkbox"><label>' + elem + '<button class="destroy"></button></label></div>',
+            var template = '<div class="view"><input class="toggle" type="checkbox"><label>' + elem.txt + '<button class="destroy"></button></label></div>',
                 todo = todoListElement.appendChild(document.createElement('li'));
 
             todo.innerHTML = template;
@@ -81,18 +116,18 @@
 
     if ( todoList.length ) { // if we have todos in LS on page load
         
-        showElements();
+        showMainAndFooter();
         buildTodos();
         
     } else {
-        hideElements();
+        hideMainAndFooter();
     }
 
     input.onkeypress = function(event) {
         var charCode = event.keyCode,
             inputField = this,
             val = inputField.value.trim(),
-            todoBody,
+            todoRecord = {},
         	template,
             todo,
             todoString;        	
@@ -100,29 +135,31 @@
 
         if ( charCode === ENTER_KEY_CODE && val ) {
 
-        	todoBody = val;
-        	template = '<div class="view"><input class="toggle" type="checkbox"><label>%<button class="destroy"></button></label></div>';
-        	var result = template.replace(/%/g, val)
-            todo = todoListElement.appendChild(document.createElement('li'));
-            todoString;
+            todoRecord = new createTodoRecord(todoList.length + 1, val, false);
 
-            showElements();
+        	template = '<div class="view"><input class="toggle" type="checkbox"><label>%%<button class="destroy"></button></label></div>';
+        	var result = template.replace(/%%/g, val),
+                todo = todoListElement.appendChild(document.createElement('li'));
+
+            showMainAndFooter();
             
-            todoList.push(todoBody); // add new todo to todoList array
-            todo.innerHTML = template;
+            todoList.push(todoRecord); // add new todo to todoList array
+            todo.innerHTML = result;
             inputField.value = '';
             todoCount.innerHTML = todoList.length;
             todoString = JSON.stringify(todoList);
 
             localStorage.setItem('storeTodo', todoString);
 
+            console.log(todoList);
+
             // console.log(localStorage.getItem('storeTodo'));
         }
     };
 
-    todoListElement.addEventListener('change', lineThrough, false);
+    todoListElement.addEventListener('change', markCompleted, false);
 
-    var deleteHandler = function () {
+    var deleteTodo = function () {
 
         var toggle = event.target;
 
@@ -140,12 +177,12 @@
             todoCount.innerHTML = todoList.length;
 
             if (!todoList.length) {
-                hideElements();
+                hideMainAndFooter();
             }
         }
 
     };
 
-    document.addEventListener('click', deleteHandler, false);
+    document.addEventListener('click', deleteTodo, false);
 
 })(window);
