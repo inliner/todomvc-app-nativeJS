@@ -24,6 +24,12 @@
         } else {
             todoCount.innerHTML = todoCountValue + 1;
         };
+
+        var countCompeletd = todoList.filter(function (item) {
+        	return item.completed
+        }).length;
+
+        todoCount.innerHTML = countCompeletd;
     };
 
     window.$parent = function (element, tagName) { //Stolen from tastejs
@@ -36,7 +42,7 @@
         return window.$parent(element.parentNode, tagName);
     };
 
-    function hasClass(el, className) {
+    function hasClass(el, className) { // classList.contains ( String )
         if (el.classList) {
             return el.classList.contains(className);
         }
@@ -84,15 +90,21 @@
 
     input.onkeypress = function(event) {
         var charCode = event.keyCode,
-            inputField = this;
+            inputField = this,
+            val = inputField.value.trim(),
+            todoBody,
+        	template,
+            todo,
+            todoString;        	
         
 
-        if ( charCode === ENTER_KEY_CODE && !isEmptyString(inputField.value) ) {
+        if ( charCode === ENTER_KEY_CODE && val ) {
 
-        	var todoBody = inputField.value.trim() + '',
-            	template = '<div class="view"><input class="toggle" type="checkbox"><label>' + todoBody + '<button class="destroy"></button></label></div>',
-                todo = todoListElement.appendChild(document.createElement('li')),
-                todoString;        	
+        	todoBody = val;
+        	template = '<div class="view"><input class="toggle" type="checkbox"><label>%<button class="destroy"></button></label></div>';
+        	var result = template.replace(/%/g, val)
+            todo = todoListElement.appendChild(document.createElement('li'));
+            todoString;
 
             showElements();
             
