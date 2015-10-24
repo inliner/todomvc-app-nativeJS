@@ -12,30 +12,41 @@
         todoCount = footer.querySelector('.todo-count strong'),
         deleteElement = document.querySelectorAll('destroy'),
         todoTemplate = '<div class="view"><input class="toggle" type="checkbox"><label>%%</label><button class="destroy"></button></div>',
+        
+        todoIdCount = function() {
+            var id = 0; // Hello! I'm a closure :-)
+            if (todoList.length) {//if there's something in localstorage we need to start counting from last element's ID
+                id = todoList[todoList.length - 1].id;
+            }
+            return function() {
+                return ++id;
+            };
+        },
+        todoId = todoIdCount(),
+
         ENTER_KEY_CODE = 13;
 
     function updateLocalStorage() {
         localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(todoList));
     };
 
-    
     function createTodoRecord(event) {
         updateLocalStorage();
 
         var charCode = event.keyCode,
             inputField = this,
             val = inputField.value.trim(),
-            todoEntry = {
-                id: todoList.length + 1,
-                txt: val,
-                completed: false
-            },
             todo,
             todoString;
 
         if ( charCode === ENTER_KEY_CODE && val ) {
 
-            var result = todoTemplate.replace(/%%/g, val),
+            var todoEntry = {
+                    id: todoId(),
+                    txt: val,
+                    completed: false
+                },
+                result = todoTemplate.replace(/%%/g, val),
                 todo = todoListElement.appendChild(document.createElement('li'));
 
             todoList.push(todoEntry); // add new todo to todoList array
@@ -44,7 +55,8 @@
             todoCount.innerHTML = todoList.length;
 
             showMainAndFooter();
-            console.log(todoList);
+
+            console.log(todoEntry);
             // console.log(localStorage.getItem('storeTodo'));
         }
     };
