@@ -49,6 +49,8 @@
                 result = todoTemplate.replace(/%%/g, val),
                 todo = todoListElement.appendChild(document.createElement('li'));
 
+            todo.dataset.itemId = todoEntry.id;
+
             todoList.push(todoEntry); // add new todo to todoList array
             todo.innerHTML = result;
             inputField.value = '';
