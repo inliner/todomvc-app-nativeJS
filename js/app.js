@@ -90,13 +90,14 @@
 
     function buildTodos() {
         todoList.forEach ( function(elem, index, array) {
-            
+
             var val = elem.txt,
                 result = todoTemplate.replace(/%%/g, val),
                 todo = todoListElement.appendChild(document.createElement('li')),
                 checkbox;
 
             todo.innerHTML = result;
+            todo.dataset.itemId = array[index].id;
             todoCount.innerHTML = todoList.length - countCompeleted();
 
             if(array[index].completed) {
