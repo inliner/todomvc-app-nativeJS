@@ -71,12 +71,17 @@
 
     function deleteTodoRecord(event) {
         var thisDestroyButton = event.target,
-            thisTodoLi = $parent(thisDestroyButton, 'li'),
-            thisTodoText = thisTodoLi.textContent,
-            indexOfItemToDelete = arrayObjectIndexOf(todoList, 'txt', thisTodoText);
+            thisTodoLi,
+            thisTodoId;
 
         if ( thisDestroyButton.classList.contains('destroy') ) {
-            todoList.splice(indexOfItemToDelete, 1);
+            thisTodoLi = $parent(thisDestroyButton, 'li');
+            thisTodoId = thisTodoLi.dataset.itemId;
+
+            todoList = todoList.filter(function(el){
+                return el.id != thisTodoId; // Is it OK to skip type check?
+            });
+
             updateLocalStorage();
             todoListElement.removeChild(thisTodoLi);
 
