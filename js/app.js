@@ -9,7 +9,9 @@
         footer = document.querySelector('.footer'),
         input = document.querySelector('.new-todo'),
         toggle = todoListElement.querySelectorAll('.toggle'),
-        todoCount = footer.querySelector('.todo-count strong'),
+        // todoCount = footer.querySelector('.todo-count strong'),
+        todoCount = footer.appendChild(document.createElement('span')),
+        todoCountTemplate = '<strong>%%</strong> item left',
         deleteElement = document.querySelectorAll('destroy'),
         todoTemplate = '<div class="view"><input class="toggle" type="checkbox"><label>%%</label><button class="destroy"></button></div>',
         
@@ -26,12 +28,19 @@
 
         ENTER_KEY_CODE = 13;
 
+    function bindListeners() {
+        input.addEventListener('keydown', createTodoRecord, false);
+        todoListElement.addEventListener('change', markCompleted, false);
+        document.addEventListener('click', deleteTodoRecord, false);
+    };
+
     function updateLocalStorage() {
         localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(todoList));
     };
 
     function createTodoRecord(event) {
         updateLocalStorage();
+        todoCount.classList.add('todo-count');
 
         var charCode = event.keyCode,
             inputField = this,
@@ -54,7 +63,7 @@
             todoList.push(todoEntry); // add new todo to todoList array
             todo.innerHTML = result;
             inputField.value = '';
-            todoCount.innerHTML = todoList.length;
+            todoCount.innerHTML = todoCountTemplate.replace(/%%/g, todoList.length);
 
             showMainAndFooter();
 
@@ -85,7 +94,7 @@
             updateLocalStorage();
             todoListElement.removeChild(thisTodoLi);
 
-            todoCount.innerHTML = todoList.length - countCompeleted();
+            todoCount.innerHTML = todoCountTemplate.replace(/%%/g, todoList.length - countCompeleted());
 
             if ( !todoList.length ) {
                 hideMainAndFooter();
@@ -94,6 +103,7 @@
     };
 
     function buildTodos() {
+        todoCount.classList.add('todo-count');
         todoList.forEach ( function(elem, index, array) {
 
             var val = elem.txt,
@@ -103,7 +113,7 @@
 
             todo.innerHTML = result;
             todo.dataset.itemId = array[index].id;
-            todoCount.innerHTML = todoList.length - countCompeleted();
+            todoCount.innerHTML = todoCountTemplate.replace(/%%/g, todoList.length - countCompeleted());
 
             if(array[index].completed) {
                 todo.classList.add('completed');
@@ -172,8 +182,11 @@
         hideMainAndFooter();
     }
 
-    input.addEventListener('keydown', createTodoRecord, false);
-    todoListElement.addEventListener('change', markCompleted, false);
-    document.addEventListener('click', deleteTodoRecord, false);
+    bindListeners();
 
 })(window);
+
+var aa = 1;
+var module = (function(){
+    console.log(aa);
+})();
