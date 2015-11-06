@@ -6,3 +6,28 @@ remove this comment if used
 remove this file if not
 
 */
+body {
+	background: #aba;
+	color: #000;
+}
+
+.todo-wrap {
+	padding: 20px;	
+}
+
+.add-button {
+	border: 1px solid;
+	background: #6b3;
+	font-size: 13px;
+	padding: 5px 10px;
+	color: #032;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+.todo-input {
+	padding: 5px;
+	margin-right: 10px;
+	border: 1px solid #555;
+	border-radius: 3px;
+}
