@@ -37,6 +37,7 @@ window.mytodoApp = (function(window) {
 
             ENTER_KEY_CODE = 13;
 
+        // console.log('storeTodo' + selector.replace(/\./g, ''));
 
         function bindListeners() {
             input.addEventListener('keydown', createTodoRecord, false);
@@ -106,7 +107,7 @@ window.mytodoApp = (function(window) {
                 updateLocalStorage();
                 todoListElement.removeChild(thisTodoLi);
 
-                console.log(thisDestroyButton);
+                console.log(todoListElement);
 
                 todoCount.innerHTML = todoCountTemplate.replace(/%%/g, todoList.length - countCompeleted());
 
