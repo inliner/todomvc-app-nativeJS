@@ -1,0 +1,91 @@
+﻿@using Cooperative.Food.Web.Models.Pages
+@using EPiServer.Editor
+@using EPiServer.Framework.Localization
+@using EPiServer.Web.Routing
+@model Cooperative.Food.Web.Models.Interfaces.IPageViewModel<Cooperative.Food.Web.Models.Base.SitePageData>
+
+<!--[if HTML5]><![endif]-->
+<!DOCTYPE html>
+<!--[if lte IE 8]>         <html class="no-js lt-ie9" lang="en-gb"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en-gb">
+<!--<![endif]-->
+
+<head>
+    <!--[if !HTML5]>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <![endif]-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>@Model.CurrentPage.PageHeader</title>
+    <meta name="keywords" content="@Model.Layout.SeoProperties.Current.SeoKeywords">
+    <meta name="description" content="@Model.Layout.SeoProperties.Current.SeoDescription">
+    <meta name="robots" content="@Model.Layout.SeoProperties.SearchIndexing" />
+
+    <script type="text/javascript">
+        document.documentElement.className += ' hideforjs';
+    </script>
+
+    @if (!string.IsNullOrEmpty(@Model.Layout.SeoProperties.Current.CanonicalUrl))
+    {
+        <link rel="canonical" href="@Model.Layout.SeoProperties.Current.CanonicalUrl" />
+    }
+
+    <!--[if gte IE 9]><!-->
+    @Styles.Render("~/resources/catalogue/uid/css/fonts.css")
+    <!--<![endif]-->
+    @Styles.Render("~/resources/catalogue/uid/css/main")
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="/resources/catalogue/uid/js/vendor/custom.modernizr.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
+    <!--[if lte IE 8]><script src="/resources/catalogue/uid/js/vendor/respond.min.js"></script><![endif]-->
+    <!--[if lte IE 8]><link rel="stylesheet" href="/resources/catalogue/uid/css/ie.css" /><![endif]-->
+    @Html.Raw(@"<script>if (Function('/*@cc_on return document.documentMode===10@*/')()) { document.documentElement.className += ' ie10'; }</script>")
+    @if (Model.Layout.GlobalSettings != null && !string.IsNullOrEmpty(@Model.Layout.GlobalSettings.Current.AnalyticsCode))
+    {
+        @Model.Layout.GlobalSettings.AnalyticsCode
+    }
+</head>
+@{
+    var bodyClass = Model.CurrentPage is WineProductPage ? "wine-page" : "";
+}
+
+<body itemscope="" itemtype="//schema.org/WebPage" id="top" class="@bodyClass">
+    @if (!PageEditing.PageIsInEditMode)
+    {
+        @Html.Raw(Model.Layout.GoogleAnalyticsTrackingCode)
+    }
+    @Html.RenderEPiServerQuickNavigator()
+
+    <div id="skip-nav">
+        <ul>
+            <li><a accesskey="c" href="#main" title="@LocalizationService.Current.GetString("/SkipNav/SkipToContent")">@LocalizationService.Current.GetString("/SkipNav/SkipToContent")</a></li>
+            <li><a accesskey="n" href="#primary-nav" title="@LocalizationService.Current.GetString("/SkipNav/SkipToNav")">@LocalizationService.Current.GetString("/SkipNav/SkipToNav")</a></li>
+            @if (Model.Layout.MenuItems.HasSecondaryNavigation)
+            {
+                <li><a accesskey="s" href="#secondary-nav" title="@LocalizationService.Current.GetString("/SkipNav/SkipToSecondNav")">@LocalizationService.Current.GetString("/SkipNav/SkipToSecondNav")</a></li>
+            }
+        </ul>
+    </div>
+
+    @if (Html.ViewContext.RequestContext.IsInEditMode())
+    {
+        <link rel="stylesheet" href="/resources/epi-preview.css" />
+    }
+
+    @RenderBody()
+    <script>window.jQuery || document.write('<script src="/resources/catalogue/uid/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+    @*<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?libraries=places"></script>*@
+    @Scripts.Render("~/resources/js/custom")
+    <!--[if lte IE 7]><script src="/resources/catalogue/uid/js/lte-ie7.js"></script><![endif]-->
+    @* Go to https://www.addthis.com/dashboard#gallery/ra-53b68c76082d78af to customize your tools *@
+    <script type="text/javascript">
+        $(window).load(function () {
+            var addThisScript = document.createElement("script");
+            addThisScript.src = "//s7.addthis.com/js/300/addthis_widget.js#pubid=@Model.Layout.GlobalSettings.Current.AddThisAccountId";
+            document.body.appendChild(addThisScript);
+        });
+    </script>
+</body>
+</html>
